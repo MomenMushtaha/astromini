@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import 'home_screen.dart';
 import 'birth_chart_screen.dart';
 import 'sky_map_screen.dart';
 import 'chat_screen.dart';
 import 'social_feed_screen.dart';
+import 'sign_up_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -25,6 +28,17 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
+    // If not authenticated, show the Sign Up screen instead of the app landing page
+    if (!auth.isAuthenticated) {
+      return SignUpScreen(
+        onAuthSuccess: (email) {
+          auth.login(email);
+        },
+      );
+    }
+
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,

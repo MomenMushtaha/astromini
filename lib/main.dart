@@ -18,13 +18,14 @@ import 'theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Firebase — iOS may auto-initialize from GoogleService-Info.plist
   try {
+    // Initialize Firebase with generated options
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  } catch (_) {
-    // Already initialized (e.g. iOS native auto-init)
+  } catch (e) {
+    // If Firebase is already initialized, just continue
+    debugPrint("Firebase already initialized or failed: $e");
   }
 
   final prefs = await SharedPreferences.getInstance();
