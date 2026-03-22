@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
+import 'sign_up_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,8 +12,8 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Personality Profile')),
-      body: Consumer<UserProfileProvider>(
-        builder: (ctx, provider, _) {
+      body: Consumer2<UserProfileProvider, AuthProvider>(
+        builder: (ctx, provider, auth, _) {
           if (provider.isGenerating) {
             return const Center(
               child: Column(
@@ -41,6 +43,68 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Auth Prompt for Guest Users
+                if (!auth.isAuthenticated)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 24),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppTheme.accentPurple.withAlpha(40),
+                          AppTheme.accentPurple.withAlpha(10),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppTheme.accentPurple.withAlpha(60)),
+                    ),
+                    child: Column(
+                      children: [
+                        const Row(
+                          children: [
+                            Text('\u2728', style: TextStyle(fontSize: 20)),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Save your profile to your account to access it anywhere!',
+                                style: TextStyle(
+                                  color: AppTheme.textPrimary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SignUpScreen(
+                                    onAuthSuccess: (email) {
+                                      auth.login(email);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.accentPurple,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text('Sign Up to Save Profile'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                 // Header badges
                 Center(
                   child: Wrap(

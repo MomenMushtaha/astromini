@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 import 'providers/chat_provider.dart';
 import 'providers/horoscope_provider.dart';
 import 'providers/birth_chart_provider.dart';
@@ -8,12 +10,23 @@ import 'providers/sky_map_provider.dart';
 import 'providers/user_profile_provider.dart';
 import 'providers/compatibility_provider.dart';
 import 'providers/social_feed_provider.dart';
+import 'providers/auth_provider.dart';
 import 'services/storage_service.dart';
 import 'screens/main_shell.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase — iOS may auto-initialize from GoogleService-Info.plist
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (_) {
+    // Already initialized (e.g. iOS native auto-init)
+  }
+
   final prefs = await SharedPreferences.getInstance();
   final storageService = StorageService(prefs);
 
@@ -29,6 +42,7 @@ class AstroMiniApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => HoroscopeProvider()),
         ChangeNotifierProvider(
           create: (_) {
