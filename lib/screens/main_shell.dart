@@ -32,11 +32,7 @@ class _MainShellState extends State<MainShell> {
 
     // If not authenticated, show the Sign Up screen instead of the app landing page
     if (!auth.isAuthenticated) {
-      return SignUpScreen(
-        onAuthSuccess: (email) {
-          auth.login(email);
-        },
-      );
+      return const SignUpScreen();
     }
 
     return Scaffold(

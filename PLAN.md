@@ -8,7 +8,9 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 **State management:** Provider + ChangeNotifier (MVVM)
 **Theme:** Dark cosmic — deep purple `#0D0D2B`, gold `#FFD54F`, purple accent `#7C4DFF`, Poppins font
 **AI:** Local keyword-matching service (no external API), upgraded to data-driven analyst referencing exact planetary positions
+**Authentication:** Firebase Auth (email/password + Google Sign-In) with `AuthProvider` stream-based state
 **Astronomy:** Pure Dart implementation — simplified VSOP87/Meeus formulas (~1-2 degree accuracy), no external packages
+**Location:** 100+ preset cities, custom lat/lng/UTC coordinate input, GPS-based current location via Geolocator + Geocoding
 
 ---
 
@@ -24,6 +26,7 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 | **Proxy Provider** | `ChangeNotifierProxyProvider2` for `ChatProvider` | Injects birth chart + personality profile into AI chat so responses become personalized automatically |
 | **Template Method** | `CustomPainter` subclasses for chart wheels | Natal chart (`ChartWheelPainter`), sky map (`SkyWheelPainter`), and synastry (`SynastryWheelPainter`) share structure: draw ring → draw divisions → draw objects → draw aspect lines |
 | **Composite** | Widget composition throughout | Complex screens built from focused, reusable widget components |
+| **Stream-Based Auth** | `AuthProvider` subscribes to `authStateChanges()` | Reactive auth state — sign in/out automatically propagates to UI via `notifyListeners()` |
 
 ---
 
@@ -44,9 +47,10 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
          ▼              ▼              ▼
 ┌─────────────────────────────────────────────────────┐
 │                   Providers                          │
-│ HoroscopeProvider  BirthChartProvider  SkyMapProvider│
-│ UserProfileProvider  CompatibilityProvider           │
-│ SocialFeedProvider  ChatProvider (ProxyProvider)     │
+│ AuthProvider  HoroscopeProvider  BirthChartProvider   │
+│ SkyMapProvider  UserProfileProvider                  │
+│ CompatibilityProvider  SocialFeedProvider            │
+│ ChatProvider (ProxyProvider)                         │
 └─────────────────────────────────────────────────────┘
          │              │              │
          ▼              ▼              ▼
@@ -231,9 +235,10 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 | `lib/services/astro/interpretation_data.dart` | 72+ planet-sign and planet-house interpretations |
 | `lib/services/astro/synastry_data.dart` | Cross-chart aspect interpretation data |
 
-### Providers (7 files)
+### Providers (8 files)
 | File | Description |
 |------|-------------|
+| `lib/providers/auth_provider.dart` | Firebase Auth state, sign up/in/out, Google Sign-In |
 | `lib/providers/chat_provider.dart` | Chat messages, typing state, chart context injection |
 | `lib/providers/horoscope_provider.dart` | Daily horoscope cache per sign |
 | `lib/providers/birth_chart_provider.dart` | Birth data, chart calculation, persistence |
@@ -242,16 +247,17 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 | `lib/providers/compatibility_provider.dart` | Partner chart comparison |
 | `lib/providers/social_feed_provider.dart` | Post loading, filtering, reactions, creation |
 
-### Screens (8 files)
+### Screens (10 files)
 | File | Description |
 |------|-------------|
-| `lib/screens/main_shell.dart` | Bottom nav shell with 5 tabs |
+| `lib/screens/main_shell.dart` | Bottom nav shell with 5 tabs, auth gate |
+| `lib/screens/sign_up_screen.dart` | Email/password + Google Sign-In auth screen |
 | `lib/screens/home_screen.dart` | Zodiac grid with 3-column layout |
 | `lib/screens/horoscope_screen.dart` | Detail view per zodiac sign |
 | `lib/screens/chat_screen.dart` | Chat UI with typing indicator |
 | `lib/screens/birth_chart_screen.dart` | Birth data input + chart visualization |
 | `lib/screens/sky_map_screen.dart` | Animated sky wheel + transit alerts |
-| `lib/screens/profile_screen.dart` | Personality profile with element balance |
+| `lib/screens/profile_screen.dart` | Personality profile with element balance + auth prompt |
 | `lib/screens/compatibility_screen.dart` | Partner input + scores + synastry wheel |
 | `lib/screens/social_feed_screen.dart` | Sign filter + post feed + compose |
 
@@ -264,7 +270,7 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 | `lib/widgets/chart_wheel_painter.dart` | Natal chart wheel CustomPainter |
 | `lib/widgets/planet_placement_card.dart` | Planet glyph + sign + degree + house card |
 | `lib/widgets/aspect_list_tile.dart` | Color-coded aspect display |
-| `lib/widgets/location_picker.dart` | 50 city searchable picker |
+| `lib/widgets/location_picker.dart` | 100+ cities, custom coordinates, GPS current location |
 | `lib/widgets/sky_wheel_painter.dart` | Animated sky wheel with natal overlay |
 | `lib/widgets/transit_alert_card.dart` | Transit event card |
 | `lib/widgets/synastry_wheel_painter.dart` | Two-ring synastry wheel |
@@ -276,9 +282,10 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 ### Config / Other
 | File | Description |
 |------|-------------|
-| `lib/main.dart` | Entry point, 7 providers, MainShell |
+| `lib/main.dart` | Entry point, 8 providers (incl. ProxyProvider2), Firebase init, MainShell |
+| `lib/firebase_options.dart` | Firebase configuration per platform |
 | `lib/theme/app_theme.dart` | Dark cosmic theme, Poppins, color palette |
-| `pubspec.yaml` | Dependencies: provider, google_fonts, intl, shared_preferences |
+| `pubspec.yaml` | Dependencies: provider, google_fonts, intl, shared_preferences, geolocator, geocoding, firebase_core, firebase_auth, cloud_firestore, google_sign_in |
 | `macos/Runner/DebugProfile.entitlements` | macOS sandbox + network permissions |
 | `macos/Runner/Release.entitlements` | macOS sandbox + network permissions |
 
@@ -290,11 +297,11 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 |----------|-------|
 | Models | 11 |
 | Services | 15 |
-| Providers | 7 |
-| Screens | 9 |
+| Providers | 8 |
+| Screens | 10 |
 | Widgets | 14 |
-| Config/Theme | 4 |
-| **Total** | **60** |
+| Config/Theme | 6 |
+| **Total** | **64** |
 
 ---
 
@@ -304,10 +311,16 @@ astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini
 dependencies:
   flutter: sdk
   cupertino_icons: ^1.0.8
-  provider: ^6.1.2        # State management
-  google_fonts: ^6.2.1    # Poppins typography
-  intl: ^0.20.2           # Date/time formatting
+  provider: ^6.1.2            # State management
+  google_fonts: ^6.2.1        # Poppins typography
+  intl: ^0.20.2               # Date/time formatting
   shared_preferences: ^2.3.0  # Birth data persistence
+  geolocator: ^13.0.1         # GPS current location
+  geocoding: ^3.0.0           # Reverse geocoding (coords → city name)
+  google_sign_in: ^6.2.1      # Google Sign-In
+  firebase_core: ^3.11.0      # Firebase platform init
+  firebase_auth: ^5.5.0       # Email/password + Google auth
+  cloud_firestore: ^5.6.3     # Cloud Firestore (future data sync)
 ```
 
 ---

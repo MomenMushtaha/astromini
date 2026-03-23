@@ -18,14 +18,14 @@ import 'theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  try {
-    // Initialize Firebase with generated options
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    // If Firebase is already initialized, just continue
-    debugPrint("Firebase already initialized or failed: $e");
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } catch (e) {
+      debugPrint("Firebase initialization failed: $e");
+    }
   }
 
   final prefs = await SharedPreferences.getInstance();

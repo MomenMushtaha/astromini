@@ -32,6 +32,7 @@ class _SkyMapScreenState extends State<SkyMapScreen>
 
   @override
   void dispose() {
+    context.read<SkyMapProvider>().stopTracking();
     _rotationController.dispose();
     super.dispose();
   }

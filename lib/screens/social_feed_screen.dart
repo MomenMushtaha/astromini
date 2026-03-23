@@ -19,9 +19,16 @@ class _SocialFeedScreenState extends State<SocialFeedScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<SocialFeedProvider>();
-      if (provider.posts.isEmpty) {
-        provider.loadPosts();
+      final feedProvider = context.read<SocialFeedProvider>();
+      if (feedProvider.posts.isEmpty) {
+        feedProvider.loadPosts();
+      }
+      // Auto-filter to user's sign if chart exists and no filter set yet
+      if (feedProvider.filterSign == null) {
+        final chartProvider = context.read<BirthChartProvider>();
+        if (chartProvider.hasChart) {
+          feedProvider.filterBySign(chartProvider.chart!.sunSign.sign);
+        }
       }
     });
   }
@@ -33,7 +40,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen> {
     final chartProvider = context.read<BirthChartProvider>();
     final userSign = chartProvider.hasChart
         ? chartProvider.chart!.sunSign.sign
-        : 'Aries';
+        : 'Unknown';
 
     showModalBottomSheet(
       context: context,

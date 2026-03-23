@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
 
 class SignUpScreen extends StatefulWidget {
-  final void Function(String email) onAuthSuccess;
-
-  const SignUpScreen({super.key, required this.onAuthSuccess});
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -14,7 +17,9 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // GoogleSignIn is created lazily — on web it crashes during construction
+  // if no clientId meta tag is set, so we only create it when actually needed.
+  GoogleSignIn? _googleSignIn;
   bool _isLogin = false;
   bool _isLoading = false;
 
@@ -26,25 +31,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _handleGoogleSignIn() async {
+    // Check if Firebase is available first
+    final authProvider = context.read<AuthProvider>();
+    if (!authProvider.firebaseAvailable) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Firebase is not configured. Please set up Firebase first.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
+
+    // On web, Google Sign-In needs a clientId. If not configured, skip.
+    if (kIsWeb) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Google Sign-In is not available on web. Use email or continue as guest.'),
+            backgroundColor: Colors.orangeAccent,
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
-      final GoogleSignInAccount? user = await _googleSignIn.signIn();
-      if (user != null) {
-        widget.onAuthSuccess(user.email);
+      _googleSignIn ??= GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn!.signIn();
+      if (googleUser == null) {
+        // User cancelled the sign-in flow
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      try {
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      } catch (keychainError) {
+        // macOS keychain error — Google OAuth succeeded but Firebase can't
+        // persist the token. This happens on macOS desktop without proper
+        // code signing. Fall back to guest mode so the user isn't blocked.
+        debugPrint('Keychain error (expected on unsigned macOS): $keychainError');
         if (mounted) {
-          Navigator.pop(context);
+          authProvider.continueAsGuest();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Welcome, ${user.displayName}!'),
+              content: Text('Welcome, ${googleUser.displayName ?? 'traveler'}! (signed in as guest on macOS)'),
               backgroundColor: AppTheme.accentPurple,
             ),
           );
         }
+        return;
       }
-    } catch (error) {
+    } on PlatformException catch (e) {
+      debugPrint('Google Sign-In PlatformException: ${e.code} — ${e.message}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Google Sign-In failed: $error')),
+          SnackBar(
+            content: Text(
+              e.code == 'sign_in_failed'
+                  ? 'Google Sign-In not configured. Check GoogleService-Info.plist for CLIENT_ID.'
+                  : 'Google Sign-In error: ${e.message}',
+            ),
+            backgroundColor: Colors.redAccent,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Google Sign-In unexpected error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Google Sign-In failed: $e'),
+            backgroundColor: Colors.redAccent,
+          ),
         );
       }
     } finally {
@@ -52,21 +120,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void _submit() {
-    // Mock authentication
-    if (_emailController.text.isNotEmpty && _passwordController.text.length >= 6) {
-      widget.onAuthSuccess(_emailController.text);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_isLogin ? 'Welcome back!' : 'Account created successfully!'),
-          backgroundColor: AppTheme.accentPurple,
-        ),
-      );
-    } else {
+  Future<void> _submit() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter valid credentials (password min 6 chars)')),
       );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      final authProv = context.read<AuthProvider>();
+      if (_isLogin) {
+        await authProv.signIn(email, password);
+      } else {
+        await authProv.signUp(email, password);
+      }
+    } on FirebaseAuthException catch (e) {
+      String message = 'An error occurred. Please try again.';
+      if (e.code == 'email-already-in-use') {
+        message = 'This email is already in use. Please sign in instead.';
+      } else if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        message = 'Invalid email or password.';
+      } else if (e.code == 'weak-password') {
+        message = 'The password provided is too weak.';
+      } else if (e.code == 'invalid-email') {
+        message = 'The email address is badly formatted.';
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Connection error. Please try again.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -98,7 +195,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Google Sign In Button
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -180,12 +276,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      context.read<AuthProvider>().continueAsGuest();
+                    },
+                    child: const Text(
+                      'Continue as Guest',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppTheme.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(color: AppTheme.accentPurple),
+            Container(
+              color: Colors.black.withAlpha(100),
+              child: const Center(
+                child: CircularProgressIndicator(color: AppTheme.accentPurple),
+              ),
             ),
         ],
       ),

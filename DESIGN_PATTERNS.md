@@ -523,4 +523,39 @@ void startTracking() {
 | 13 | **Caching** | Creational | `horoscope_provider.dart` | Low |
 | 14 | **Lazy Initialization** | Creational | `main.dart`, `sky_map_provider.dart` | Low |
 
-**Total: 14 design patterns** across 56 Dart files.
+| 15 | **Stream-Based Auth** | Behavioral | `auth_provider.dart` (Firebase stream) | Medium |
+
+**Total: 15 design patterns** across 59 Dart files.
+
+---
+
+### 15. Stream-Based Authentication (Observer via Stream)
+
+**Location:** `lib/providers/auth_provider.dart`
+
+Firebase's `authStateChanges()` stream drives authentication state reactively:
+
+```dart
+class AuthProvider extends ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  AuthProvider() {
+    _auth.authStateChanges().listen((User? user) {
+      _user = user;
+      notifyListeners();  // UI reacts to auth changes
+    });
+  }
+
+  bool get isAuthenticated => _user != null;
+}
+```
+
+Used in `MainShell` to gate access:
+```dart
+// lib/screens/main_shell.dart
+final auth = context.watch<AuthProvider>();
+if (!auth.isAuthenticated) return const SignUpScreen();
+```
+
+**Justification:** Firebase Auth provides a stream-based API. Subscribing in the constructor means any auth state change (sign in, sign out, token refresh) automatically propagates to the UI without manual polling.

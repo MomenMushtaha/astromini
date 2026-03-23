@@ -84,11 +84,7 @@ class ProfileScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => SignUpScreen(
-                                    onAuthSuccess: (email) {
-                                      auth.login(email);
-                                    },
-                                  ),
+                                  builder: (_) => const SignUpScreen(),
                                 ),
                               );
                             },
