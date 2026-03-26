@@ -11,7 +11,6 @@ import 'providers/user_profile_provider.dart';
 import 'providers/compatibility_provider.dart';
 import 'providers/auth_provider.dart';
 import 'services/storage_service.dart';
-import 'services/firestore_service.dart';
 import 'screens/main_shell.dart';
 import 'theme/app_theme.dart';
 
@@ -45,16 +44,11 @@ class AstroMiniApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => HoroscopeProvider()),
-        ChangeNotifierProxyProvider<AuthProvider, BirthChartProvider>(
+        ChangeNotifierProvider(
           create: (_) {
-            final provider =
-                BirthChartProvider(storageService, FirestoreService());
+            final provider = BirthChartProvider(storageService);
             provider.loadSavedBirthData();
             return provider;
-          },
-          update: (_, auth, chart) {
-            chart!.onAuthChanged(auth.user?.uid);
-            return chart;
           },
         ),
         ChangeNotifierProvider(create: (_) => SkyMapProvider()),

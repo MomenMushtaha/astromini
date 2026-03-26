@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.astrominiai.app"
+    namespace = "com.astromini.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.astrominiai.app"
+        applicationId = "com.astromini.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
