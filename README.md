@@ -1,5 +1,6 @@
 # astromini - Architecture & Design Patterns Document
 
+---
 ## Overview
 
 astromini is a Flutter astrology application featuring daily horoscopes for all 12 zodiac signs
@@ -72,7 +73,6 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 - The card shall read the user's sign from `BirthChartProvider` using `didChangeDependencies` (not `initState`), and update reactively when the sign changes.
 
 ---
-
 ## Non-Functional Requirements
 
 ### NFR-1: Platform Support
@@ -125,8 +125,8 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 - **Cloud Sync:** Sync birth chart data to Firestore for cross-device access.
 - **Riverpod Migration:** Drop-in replacement for Provider if complexity grows.
 
+---
 ## Project Structure
-
 ```
 lib/
 ├── main.dart                  # App entry point, provider setup, routing
@@ -151,8 +151,8 @@ lib/
     └── chat_bubble.dart       # Chat message bubble widget
 ```
 
+---
 ## Tech Stack
-
 | Layer           | Technology              |
 |-----------------|------------------------|
 | Framework       | Flutter 3.41            |
