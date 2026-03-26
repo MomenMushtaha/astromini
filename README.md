@@ -126,6 +126,11 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 - **Riverpod Migration:** Drop-in replacement for Provider if complexity grows.
 
 ---
+## High Level System Design UML Diagram
+
+![High Level System Design UML Diagram](docs/Astromini%20System%20Design%20Diagram.jpg)
+
+---
 ## Project Structure
 ```
 lib/
