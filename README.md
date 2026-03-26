@@ -116,10 +116,7 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 - Horoscope generation, birth chart computation, AI chat responses, and compatibility scoring shall work offline using built-in local algorithms.
 - The only features requiring network are Firebase authentication and Google Sign-In.
 
----
-
-## Future Extensibility
-
+### NFR-9: Future Extensibility
 - **Real AI API:** Replace `AIChatService` with an HTTP client calling OpenAI/Claude API.
 - **Push Notifications:** Add daily horoscope reminders via Firebase Messaging.
 - **Cloud Sync:** Sync birth chart data to Firestore for cross-device access.
