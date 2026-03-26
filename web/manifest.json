@@ -1,6 +1,6 @@
 {
-    "name": "astromini",
-    "short_name": "astromini",
+    "name": "AstrominiAI",
+    "short_name": "AstrominiAI",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             const SizedBox(width: 10),
-            const Text('astromini'),
+            const Text('AstrominiAI'),
           ],
         ),
         actions: [

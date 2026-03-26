@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.astromini.app"
+    namespace = "com.AstrominiAI.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.astromini.app"
+        applicationId = "com.AstrominiAI.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -157,4 +157,3 @@ lib/
 | Theming         | Material 3 (dark cosmic theme) |
 | AI Chat         | Built-in response engine (swappable for API) |
 | Animations      | Implicit animations + AnimatedList |
-

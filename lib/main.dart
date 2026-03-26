@@ -64,7 +64,7 @@ class AstroMiniApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'astromini',
+        title: 'AstrominiAI',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
         home: const MainShell(),

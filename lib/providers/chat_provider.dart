@@ -16,7 +16,7 @@ class ChatProvider extends ChangeNotifier {
   ChatProvider() {
     _messages.add(ChatMessage(
       text:
-          'Welcome, cosmic traveler! \u2728\u{1F30C}\n\nI am astromini, your celestial guide through the mysteries of the zodiac. I can read the stars for your daily horoscope, explore love compatibility, offer career guidance, and reveal the secrets of any zodiac sign.\n\nWhat cosmic wisdom do you seek today?',
+          'Welcome, cosmic traveler! \u2728\u{1F30C}\n\nI am AstrominiAI, your celestial guide through the mysteries of the zodiac. I can read the stars for your daily horoscope, explore love compatibility, offer career guidance, and reveal the secrets of any zodiac sign.\n\nWhat cosmic wisdom do you seek today?',
       sender: MessageSender.ai,
     ));
   }

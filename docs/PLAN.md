@@ -1,8 +1,8 @@
-# astromini — Complete Project Plan
+# AstrominiAI — Complete Project Plan
 
 ## Overview
 
-astromini is a Flutter astrology app styled with a dark cosmic theme ("astromini" — lowercase like "gemini"). It started as a basic zodiac horoscope reader with an AI chat agent and was expanded into a feature-rich astrology platform with six major features: birth chart generation, live planetary tracking, AI personality profiling, compatibility analysis, a data-driven AI analyst agent, and a social feed.
+AstrominiAI is a Flutter astrology app styled with a dark cosmic theme ("AstrominiAI" — lowercase like "gemini"). It started as a basic zodiac horoscope reader with an AI chat agent and was expanded into a feature-rich astrology platform with six major features: birth chart generation, live planetary tracking, AI personality profiling, compatibility analysis, a data-driven AI analyst agent, and a social feed.
 
 **Platform:** Flutter 3.41.5 / Dart 3.11.3, macOS (darwin-arm64)
 **State management:** Provider + ChangeNotifier (MVVM)

@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
               const Text('\u2728', style: TextStyle(fontSize: 28)),
               const SizedBox(width: 10),
               Text(
-                'astromini',
+                'AstrominiAI',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       foreground: Paint()
                         ..shader = const LinearGradient(
