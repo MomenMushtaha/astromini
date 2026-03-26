@@ -5,7 +5,6 @@ import 'home_screen.dart';
 import 'birth_chart_screen.dart';
 import 'sky_map_screen.dart';
 import 'chat_screen.dart';
-import 'social_feed_screen.dart';
 import 'sign_up_screen.dart';
 
 class MainShell extends StatefulWidget {
@@ -23,7 +22,6 @@ class _MainShellState extends State<MainShell> {
     BirthChartScreen(),
     SkyMapScreen(),
     ChatScreen(),
-    SocialFeedScreen(),
   ];
 
   @override
@@ -69,11 +67,6 @@ class _MainShellState extends State<MainShell> {
               icon: Icon(Icons.chat_bubble_outline),
               activeIcon: Icon(Icons.chat_bubble),
               label: 'Chat',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              activeIcon: Icon(Icons.people),
-              label: 'Social',
             ),
           ],
         ),

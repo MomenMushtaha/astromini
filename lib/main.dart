@@ -9,7 +9,6 @@ import 'providers/birth_chart_provider.dart';
 import 'providers/sky_map_provider.dart';
 import 'providers/user_profile_provider.dart';
 import 'providers/compatibility_provider.dart';
-import 'providers/social_feed_provider.dart';
 import 'providers/auth_provider.dart';
 import 'services/storage_service.dart';
 import 'screens/main_shell.dart';
@@ -55,7 +54,6 @@ class AstroMiniApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SkyMapProvider()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         ChangeNotifierProvider(create: (_) => CompatibilityProvider()),
-        ChangeNotifierProvider(create: (_) => SocialFeedProvider()),
         ChangeNotifierProxyProvider2<BirthChartProvider, UserProfileProvider,
             ChatProvider>(
           create: (_) => ChatProvider(),

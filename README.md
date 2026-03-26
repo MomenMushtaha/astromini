@@ -57,17 +57,11 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 - A synastry wheel shall overlay both charts visually.
 - A score meter shall display the overall compatibility percentage.
 
-### FR-8: Social Feed
-- The app shall display a feed of astrology-themed social posts.
-- Posts shall be filterable by zodiac sign via filter chips.
-- When the user has a birth chart, the feed shall auto-filter to the user's Sun sign on first load.
-- Each post shall display the author, sign, content, and engagement metrics.
-
-### FR-9: Personality Profile
+### FR-8: Personality Profile
 - The app shall generate a personality profile based on the user's birth chart.
 - The profile shall include strengths, weaknesses, and trait descriptions derived from planetary placements.
 
-### FR-10: Daily Tip Card (Mixin Demo)
+### FR-9: Daily Tip Card (Mixin Demo)
 - The `DailyTipCard` shall display a sign-specific cosmic tip with a breathing pulse animation.
 - The animation shall be provided via `CosmicBreathingMixin` (demonstrates Dart mixins with `TickerProvider`).
 - The card shall read the user's sign from `BirthChartProvider` using `didChangeDependencies` (not `initState`), and update reactively when the sign changes.
@@ -110,7 +104,7 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 ### NFR-7: Theming & UI
 - The app shall use a dark cosmic theme (Material 3) defined centrally in `AppTheme`.
 - All screens shall share consistent typography, color tokens, and spacing.
-- The bottom navigation bar shall provide access to 5 primary sections: Home, Chart, Sky, Chat, and Social.
+- The bottom navigation bar shall provide access to 4 primary sections: Home, Chart, Sky, and Chat.
 
 ### NFR-8: Offline Capability
 - Horoscope generation, birth chart computation, AI chat responses, and compatibility scoring shall work offline using built-in local algorithms.
