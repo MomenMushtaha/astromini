@@ -119,7 +119,7 @@ personalized daily horoscopes, and chat with an AI astrologer for guidance.
 ---
 ## High Level System Design UML Diagram
 
-![High Level System Design UML Diagram](docs/Astromini%20System%20Design%20Diagram.jpg)
+![High Level System Design UML Diagram](docs/AstrominiAI%20System%20Design%20Diagram.jpg)
 
 ---
 ## Project Structure
