@@ -7,44 +7,6 @@ and an AI-powered Astrology & Horoscope chat agent. Users can browse zodiac sign
 personalized daily horoscopes, and chat with an AI astrologer for guidance.
 
 ---
-
-## Project Structure
-
-```
-lib/
-├── main.dart                  # App entry point, provider setup, routing
-├── models/
-│   ├── zodiac_sign.dart       # Zodiac sign data model with traits & dates
-│   ├── chat_message.dart      # Chat message model (user/ai sender)
-│   └── horoscope.dart         # Daily horoscope data model
-├── providers/
-│   ├── chat_provider.dart     # Chat state management (ChangeNotifier)
-│   └── horoscope_provider.dart# Horoscope state management
-├── screens/
-│   ├── home_screen.dart       # Zodiac grid + navigation
-│   ├── horoscope_screen.dart  # Daily horoscope detail view
-│   └── chat_screen.dart       # AI astrologer chat interface
-├── services/
-│   ├── ai_chat_service.dart   # AI response generation (Strategy pattern)
-│   └── horoscope_service.dart # Horoscope data provider (Repository pattern)
-├── theme/
-│   └── app_theme.dart         # Dark cosmic theme definition
-└── widgets/
-    ├── zodiac_card.dart       # Zodiac sign card widget
-    └── chat_bubble.dart       # Chat message bubble widget
-```
-
-## Tech Stack
-
-| Layer           | Technology              |
-|-----------------|------------------------|
-| Framework       | Flutter 3.41            |
-| State Mgmt     | Provider + ChangeNotifier |
-| Navigation      | Navigator 2.0 (MaterialPageRoute) |
-| Theming         | Material 3 (dark cosmic theme) |
-| AI Chat         | Built-in response engine (swappable for API) |
-| Animations      | Implicit animations + AnimatedList |
-
 ## Functional Requirements
 
 ### FR-1: Authentication
@@ -162,3 +124,41 @@ lib/
 - **Push Notifications:** Add daily horoscope reminders via Firebase Messaging.
 - **Cloud Sync:** Sync birth chart data to Firestore for cross-device access.
 - **Riverpod Migration:** Drop-in replacement for Provider if complexity grows.
+
+## Project Structure
+
+```
+lib/
+├── main.dart                  # App entry point, provider setup, routing
+├── models/
+│   ├── zodiac_sign.dart       # Zodiac sign data model with traits & dates
+│   ├── chat_message.dart      # Chat message model (user/ai sender)
+│   └── horoscope.dart         # Daily horoscope data model
+├── providers/
+│   ├── chat_provider.dart     # Chat state management (ChangeNotifier)
+│   └── horoscope_provider.dart# Horoscope state management
+├── screens/
+│   ├── home_screen.dart       # Zodiac grid + navigation
+│   ├── horoscope_screen.dart  # Daily horoscope detail view
+│   └── chat_screen.dart       # AI astrologer chat interface
+├── services/
+│   ├── ai_chat_service.dart   # AI response generation (Strategy pattern)
+│   └── horoscope_service.dart # Horoscope data provider (Repository pattern)
+├── theme/
+│   └── app_theme.dart         # Dark cosmic theme definition
+└── widgets/
+    ├── zodiac_card.dart       # Zodiac sign card widget
+    └── chat_bubble.dart       # Chat message bubble widget
+```
+
+## Tech Stack
+
+| Layer           | Technology              |
+|-----------------|------------------------|
+| Framework       | Flutter 3.41            |
+| State Mgmt     | Provider + ChangeNotifier |
+| Navigation      | Navigator 2.0 (MaterialPageRoute) |
+| Theming         | Material 3 (dark cosmic theme) |
+| AI Chat         | Built-in response engine (swappable for API) |
+| Animations      | Implicit animations + AnimatedList |
+
