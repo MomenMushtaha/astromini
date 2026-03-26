@@ -29,6 +29,7 @@ class HomeScreen extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final sign = ZodiacSign.all[index];
+                    // THIS IS THE CHILD TO PARENT CALLBACK IMPLEMENTATION
                     return ZodiacCard(
                       sign: sign,
                       onTap: () => Navigator.push(

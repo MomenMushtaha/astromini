@@ -1,4 +1,4 @@
-package com.astromini.app
+package com.astrominiai.app
 
 import io.flutter.embedding.android.FlutterActivity
 
