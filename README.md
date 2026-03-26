@@ -1,9 +1,9 @@
-# astromini - Architecture & Design Patterns Document
+# AstrominiAI - System Design & Architecture
 
 ---
 ## Overview
 
-astromini is a Flutter astrology application featuring daily horoscopes for all 12 zodiac signs
+AstrominiAI is a Flutter astrology application featuring daily horoscopes for all 12 zodiac signs
 and an AI-powered Astrology & Horoscope chat agent. Users can browse zodiac signs, read
 personalized daily horoscopes, and chat with an AI astrologer for guidance.
 
