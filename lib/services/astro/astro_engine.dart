@@ -4,6 +4,7 @@ import '../../models/planet_position.dart';
 import 'aspects.dart';
 import 'house_system.dart';
 import 'julian_date.dart';
+import 'moon_phase.dart';
 import 'planetary_positions.dart';
 import 'zodiac_util.dart';
 
@@ -20,7 +21,9 @@ class AstroEngine {
     // Calculate Ascendant and Midheaven
     final asc = HouseSystem.ascendant(lstDeg, birthData.latitude, obl);
     final mc = HouseSystem.midheaven(lstDeg, obl);
-    final houseCusps = HouseSystem.calculateHouses(asc);
+    final houseCusps = HouseSystem.calculatePlacidusHouses(
+      asc, mc, lstDeg, birthData.latitude, obl,
+    );
 
     // Calculate planetary positions
     final rawPositions = PlanetaryPositions.allPositions(t);
@@ -40,6 +43,8 @@ class AstroEngine {
       'uranus': CelestialBody.uranus,
       'neptune': CelestialBody.neptune,
       'pluto': CelestialBody.pluto,
+      'northNode': CelestialBody.northNode,
+      'southNode': CelestialBody.southNode,
     };
 
     final planets = <CelestialBody, PlanetPosition>{};
@@ -52,7 +57,10 @@ class AstroEngine {
       var diff = nextLon - lon;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
-      final isRetro = diff < 0 && body != CelestialBody.sun && body != CelestialBody.moon;
+      // Nodes are always retrograde (mean node); Sun/Moon never retrograde
+      final isRetro = (body == CelestialBody.northNode || body == CelestialBody.southNode)
+          ? true
+          : diff < 0 && body != CelestialBody.sun && body != CelestialBody.moon;
 
       planets[body] = PlanetPosition(
         body: body,
@@ -66,6 +74,12 @@ class AstroEngine {
     // Calculate aspects
     final aspects = AspectCalculator.calculateAspects(planets);
 
+    // Calculate moon phase
+    final moonPhase = MoonPhaseCalculator.calculatePhase(
+      rawPositions['sun']!,
+      rawPositions['moon']!,
+    );
+
     return BirthChart(
       birthData: birthData,
       planets: planets,
@@ -73,6 +87,7 @@ class AstroEngine {
       ascendant: asc,
       midheaven: mc,
       aspects: aspects,
+      moonPhase: moonPhase,
     );
   }
 
@@ -97,6 +112,8 @@ class AstroEngine {
       'uranus': CelestialBody.uranus,
       'neptune': CelestialBody.neptune,
       'pluto': CelestialBody.pluto,
+      'northNode': CelestialBody.northNode,
+      'southNode': CelestialBody.southNode,
     };
 
     final planets = <CelestialBody, PlanetPosition>{};
@@ -107,7 +124,9 @@ class AstroEngine {
       var diff = nextLon - lon;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
-      final isRetro = diff < 0 && body != CelestialBody.sun && body != CelestialBody.moon;
+      final isRetro = (body == CelestialBody.northNode || body == CelestialBody.southNode)
+          ? true
+          : diff < 0 && body != CelestialBody.sun && body != CelestialBody.moon;
 
       planets[body] = PlanetPosition(
         body: body,

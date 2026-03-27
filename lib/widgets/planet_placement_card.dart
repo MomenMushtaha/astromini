@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import '../models/planet_position.dart';
+import '../services/astro/dignities.dart';
 import '../theme/app_theme.dart';
 
 class PlanetPlacementCard extends StatelessWidget {
   final PlanetPosition position;
 
   const PlanetPlacementCard({super.key, required this.position});
+
+  String? get _dignityLabel =>
+      Dignities.getDignity(position.body, position.zodiacPosition.sign);
+
+  Color get _dignityColor {
+    switch (_dignityLabel) {
+      case 'Domicile': return const Color(0xFF66BB6A);
+      case 'Exalted': return const Color(0xFFFFD54F);
+      case 'Detriment': return const Color(0xFFFF7043);
+      case 'Fall': return const Color(0xFFEF5350);
+      default: return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +56,9 @@ class PlanetPlacementCard extends StatelessWidget {
                         fontSize: 14,
                       ),
                     ),
-                    if (position.isRetrograde) ...[
+                    if (position.isRetrograde &&
+                        position.body != CelestialBody.northNode &&
+                        position.body != CelestialBody.southNode) ...[
                       const SizedBox(width: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -55,6 +71,23 @@ class PlanetPlacementCard extends StatelessWidget {
                           'R',
                           style:
                               TextStyle(color: Color(0xFFEF5350), fontSize: 10),
+                        ),
+                      ),
+                    ],
+                    if (_dignityLabel != null) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: _dignityColor.withAlpha(30),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          _dignityLabel!,
+                          style: TextStyle(
+                              color: _dignityColor, fontSize: 9,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                     ],

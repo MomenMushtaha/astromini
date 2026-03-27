@@ -89,6 +89,8 @@ class TransitAlertCard extends StatelessWidget {
         return const Color(0xFFFFEE58);
       case TransitType.conjunction:
         return AppTheme.accentPurple;
+      case TransitType.aspect:
+        return const Color(0xFF42A5F5);
     }
   }
 }

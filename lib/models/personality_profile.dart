@@ -27,6 +27,9 @@ class PersonalityProfile {
   final String loveStyle;
   final String careerAptitude;
   final Map<String, double> elementBalance;
+  final Map<String, int>? modalityBalance;
+  final List<String>? stelliums;
+  final String? moonPhaseAtBirth;
 
   const PersonalityProfile({
     required this.chart,
@@ -40,5 +43,8 @@ class PersonalityProfile {
     required this.loveStyle,
     required this.careerAptitude,
     required this.elementBalance,
+    this.modalityBalance,
+    this.stelliums,
+    this.moonPhaseAtBirth,
   });
 }

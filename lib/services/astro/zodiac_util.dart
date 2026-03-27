@@ -48,4 +48,14 @@ class ZodiacUtil {
   static String elementFor(String signName) {
     return signElements[signName] ?? 'Fire';
   }
+
+  static const signModalities = {
+    'Aries': 'Cardinal', 'Cancer': 'Cardinal', 'Libra': 'Cardinal', 'Capricorn': 'Cardinal',
+    'Taurus': 'Fixed', 'Leo': 'Fixed', 'Scorpio': 'Fixed', 'Aquarius': 'Fixed',
+    'Gemini': 'Mutable', 'Virgo': 'Mutable', 'Sagittarius': 'Mutable', 'Pisces': 'Mutable',
+  };
+
+  static String modalityFor(String signName) {
+    return signModalities[signName] ?? 'Cardinal';
+  }
 }

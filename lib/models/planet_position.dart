@@ -8,7 +8,9 @@ enum CelestialBody {
   saturn,
   uranus,
   neptune,
-  pluto;
+  pluto,
+  northNode,
+  southNode;
 
   String get symbol {
     switch (this) {
@@ -22,11 +24,17 @@ enum CelestialBody {
       case uranus: return '\u2645';
       case neptune: return '\u2646';
       case pluto: return '\u2647';
+      case northNode: return '\u260A';
+      case southNode: return '\u260B';
     }
   }
 
   String get displayName {
-    return name[0].toUpperCase() + name.substring(1);
+    switch (this) {
+      case northNode: return 'North Node';
+      case southNode: return 'South Node';
+      default: return name[0].toUpperCase() + name.substring(1);
+    }
   }
 }
 

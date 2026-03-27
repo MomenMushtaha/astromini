@@ -4,9 +4,11 @@ import 'planet_position.dart';
 
 enum AspectType {
   conjunction(0, 8, 'Conjunction'),
+  semiSextile(30, 2, 'Semi-sextile'),
   sextile(60, 6, 'Sextile'),
   square(90, 7, 'Square'),
   trine(120, 8, 'Trine'),
+  quincunx(150, 3, 'Quincunx'),
   opposition(180, 8, 'Opposition');
 
   final double angle;
@@ -18,9 +20,11 @@ enum AspectType {
   Color get color {
     switch (this) {
       case conjunction: return const Color(0xFFFFD54F);
+      case semiSextile: return const Color(0xFF80DEEA);
       case sextile: return const Color(0xFF66BB6A);
       case square: return const Color(0xFFEF5350);
       case trine: return const Color(0xFF42A5F5);
+      case quincunx: return const Color(0xFF9CCC65);
       case opposition: return const Color(0xFFFF7043);
     }
   }

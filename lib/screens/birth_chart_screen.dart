@@ -258,6 +258,13 @@ class _BirthChartScreenState extends State<BirthChartScreen> {
             style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
             textAlign: TextAlign.center,
           ),
+          if (chart.moonPhase != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              'Born under a ${chart.moonPhase}',
+              style: const TextStyle(color: AppTheme.accentGold, fontSize: 12),
+            ),
+          ],
           const SizedBox(height: 16),
 
           // Chart wheel
@@ -289,7 +296,37 @@ class _BirthChartScreenState extends State<BirthChartScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+
+          // Element & Modality Balance
+          Row(
+            children: [
+              Expanded(child: _buildBalanceCard('Elements', chart.elementBalance)),
+              const SizedBox(width: 8),
+              Expanded(child: _buildBalanceCard('Modality', chart.modalityBalance)),
+            ],
+          ),
+
+          // Stelliums
+          if (chart.stelliums.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ...chart.stelliums.map((s) => Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentGold.withAlpha(15),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: AppTheme.accentGold.withAlpha(40)),
+                  ),
+                  child: Text(s,
+                      style: const TextStyle(
+                          color: AppTheme.accentGold, fontSize: 12)),
+                )),
+          ],
+          const SizedBox(height: 16),
 
           // Planets
           Align(
@@ -315,6 +352,57 @@ class _BirthChartScreenState extends State<BirthChartScreen> {
           ...chart.aspects.take(15).map((a) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: AspectListTile(aspect: a),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBalanceCard(String title, Map<String, int> balance) {
+    final total = balance.values.fold(0, (a, b) => a + b);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.cardDark,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              )),
+          const SizedBox(height: 6),
+          ...balance.entries.map((e) => Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 55,
+                      child: Text(e.key,
+                          style: const TextStyle(
+                              color: AppTheme.textSecondary, fontSize: 10)),
+                    ),
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: LinearProgressIndicator(
+                          value: total > 0 ? e.value / total : 0,
+                          backgroundColor: Colors.white.withAlpha(10),
+                          color: AppTheme.accentPurple,
+                          minHeight: 4,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text('${e.value}',
+                        style: const TextStyle(
+                            color: AppTheme.textPrimary, fontSize: 10)),
+                  ],
+                ),
               )),
         ],
       ),

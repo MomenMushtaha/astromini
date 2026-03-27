@@ -117,6 +117,16 @@ class PlanetaryPositions {
         0.3458 * sin(2 * m));
   }
 
+  static double northNodeLongitude(double t) {
+    // Mean Lunar North Node (Ω) — Meeus, Astronomical Algorithms
+    final omega = 125.04452 - 1934.136261 * t + 0.0020708 * t * t + t * t * t / 450000.0;
+    return _normalize(omega);
+  }
+
+  static double southNodeLongitude(double t) {
+    return _normalize(northNodeLongitude(t) + 180.0);
+  }
+
   static Map<String, double> allPositions(double t) {
     return {
       'sun': sunLongitude(t),
@@ -129,6 +139,8 @@ class PlanetaryPositions {
       'uranus': uranusLongitude(t),
       'neptune': neptuneLongitude(t),
       'pluto': plutoLongitude(t),
+      'northNode': northNodeLongitude(t),
+      'southNode': southNodeLongitude(t),
     };
   }
 }

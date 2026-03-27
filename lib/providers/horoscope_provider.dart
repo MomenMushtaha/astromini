@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../models/birth_chart.dart';
 import '../models/horoscope.dart';
 import '../services/horoscope_service.dart';
 
@@ -11,7 +12,7 @@ class HoroscopeProvider extends ChangeNotifier {
 
   Horoscope? getHoroscope(String signName) => _cache[signName];
 
-  Future<Horoscope> fetchHoroscope(String signName) async {
+  Future<Horoscope> fetchHoroscope(String signName, {BirthChart? chart}) async {
     if (_cache.containsKey(signName)) return _cache[signName]!;
 
     _isLoading = true;
@@ -19,7 +20,7 @@ class HoroscopeProvider extends ChangeNotifier {
 
     // Simulate API delay
     await Future.delayed(const Duration(milliseconds: 500));
-    final horoscope = _service.getHoroscope(signName);
+    final horoscope = _service.getHoroscope(signName, chart: chart);
     _cache[signName] = horoscope;
 
     _isLoading = false;

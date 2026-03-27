@@ -1,5 +1,6 @@
 import '../../models/planet_position.dart';
 import '../../models/transit_alert.dart';
+import 'transit_calculator.dart';
 
 class TransitData {
   TransitData._();
@@ -70,11 +71,25 @@ class TransitData {
     ),
   ];
 
-  static List<TransitAlert> getActiveAndUpcoming() {
-    return _transits
-        .where((t) => t.isActive || t.isUpcoming)
-        .toList()
-      ..sort((a, b) => a.startDate.compareTo(b.startDate));
+  static List<TransitAlert> getActiveAndUpcoming({
+    Map<CelestialBody, PlanetPosition>? currentPositions,
+    Map<CelestialBody, PlanetPosition>? natalPositions,
+  }) {
+    final dynamic = currentPositions != null
+        ? TransitCalculator.calculateTransits(
+            currentPositions,
+            natalPositions: natalPositions,
+          )
+        : <TransitAlert>[];
+
+    final staticAlerts = _transits.where((t) => t.isActive || t.isUpcoming);
+    final all = [...dynamic, ...staticAlerts];
+
+    // Deduplicate by title
+    final seen = <String>{};
+    final unique = all.where((t) => seen.add(t.title)).toList();
+    unique.sort((a, b) => a.startDate.compareTo(b.startDate));
+    return unique;
   }
 
   static List<TransitAlert> get allTransits => List.unmodifiable(_transits);

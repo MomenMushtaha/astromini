@@ -1,6 +1,6 @@
 import 'planet_position.dart';
 
-enum TransitType { retrograde, ingress, eclipse, conjunction }
+enum TransitType { retrograde, ingress, eclipse, conjunction, aspect }
 
 class TransitAlert {
   final String title;

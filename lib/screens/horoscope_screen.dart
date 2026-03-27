@@ -57,6 +57,83 @@ class _HoroscopeScreenState extends State<HoroscopeScreen> {
                 _buildSignHeader(),
                 const SizedBox(height: 20),
                 _buildQuickStats(horoscope),
+                if (horoscope.moonPhaseToday != null) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppTheme.cardDark,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: AppTheme.accentGold.withAlpha(40)),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(horoscope.moonPhaseToday!.split(' ').first,
+                            style: const TextStyle(fontSize: 22)),
+                        const SizedBox(width: 10),
+                        Text(
+                          horoscope.moonPhaseToday!
+                              .split(' ')
+                              .skip(1)
+                              .join(' '),
+                          style: const TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                if (horoscope.keyTransits != null &&
+                    horoscope.keyTransits!.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: AppTheme.cardDark,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color(0xFF42A5F5).withAlpha(40)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Key Transits Today',
+                          style: TextStyle(
+                            color: Color(0xFF42A5F5),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        ...horoscope.keyTransits!.map((t) => Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Row(
+                                children: [
+                                  const Text('\u2022 ',
+                                      style: TextStyle(
+                                          color: Color(0xFF42A5F5))),
+                                  Expanded(
+                                    child: Text(t,
+                                        style: const TextStyle(
+                                          color: AppTheme.textSecondary,
+                                          fontSize: 12,
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 20),
                 _buildReadingCard(
                   '\u{1F31E} Daily Reading',

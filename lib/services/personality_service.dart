@@ -1,7 +1,9 @@
 import '../models/birth_chart.dart';
 import '../models/personality_profile.dart';
 import '../models/planet_position.dart';
+import 'astro/dignities.dart';
 import 'astro/interpretation_data.dart';
+import 'astro/moon_phase.dart';
 
 class PersonalityService {
   PersonalityService._();
@@ -23,9 +25,17 @@ class PersonalityService {
     for (final entry in chart.planets.entries) {
       final body = entry.key;
       final pos = entry.value;
-      final interp = InterpretationData
+      var interp = InterpretationData
               .planetSign['${body.name}_${pos.zodiacPosition.sign}'] ??
           '${body.displayName} in ${pos.zodiacPosition.sign} influences your ${_planetDomain(body)}.';
+
+      // Add dignity information
+      final dignity = Dignities.getDignity(body, pos.zodiacPosition.sign);
+      if (dignity != null) {
+        interp = '${body.displayName} in ${pos.zodiacPosition.sign} ($dignity) — '
+            '${Dignities.dignityDescription(dignity)}. $interp';
+      }
+
       influences.add(PlanetaryInfluence(
         planet: body,
         sign: pos.zodiacPosition.sign,
@@ -47,14 +57,37 @@ class PersonalityService {
     final challenges = _generateChallenges(sun.zodiacPosition.sign,
         moon.zodiacPosition.sign, dominant.key);
 
+    // Modality balance
+    final modalBal = chart.modalityBalance;
+    final dominantModality = modalBal.entries.reduce(
+        (a, b) => a.value > b.value ? a : b);
+
+    // Stelliums
+    final stelliums = chart.stelliums;
+
+    // Moon phase at birth
+    final moonPhaseAtBirth = chart.moonPhase;
+    final moonPhaseNote = moonPhaseAtBirth != null
+        ? '\n\nBorn under a ${MoonPhaseCalculator.phaseEmoji(moonPhaseAtBirth)} $moonPhaseAtBirth: '
+          '${MoonPhaseCalculator.phaseDescription(moonPhaseAtBirth)}'
+        : '';
+
+    // Stellium note
+    final stelliumNote = stelliums.isNotEmpty
+        ? '\n\n${stelliums.join('. ')} — concentrating energy in these areas of life.'
+        : '';
+
     final summary = 'With your Sun in ${sun.zodiacPosition.sign} '
         '(${sun.zodiacPosition.formatted}), Moon in ${moon.zodiacPosition.sign} '
         '(${moon.zodiacPosition.formatted}), and $risingSign Rising, you possess '
         'a unique blend of ${_elementQuality(dominant.key)} energy. '
-        'Your dominant element is ${dominant.key} with ${dominant.value} out of 10 '
-        'planetary placements, giving you a natural affinity for '
-        '${_elementAffinity(dominant.key)}.\n\n'
-        '$sunAnalysis\n\n$moonAnalysis';
+        'Your dominant element is ${dominant.key} with ${dominant.value} out of '
+        '${elementBal.values.fold(0, (a, b) => a + b)} planetary placements, '
+        'giving you a natural affinity for ${_elementAffinity(dominant.key)}. '
+        'Your dominant modality is ${dominantModality.key}, making you '
+        '${_modalityQuality(dominantModality.key)}.\n\n'
+        '$sunAnalysis\n\n$moonAnalysis'
+        '$moonPhaseNote$stelliumNote';
 
     return PersonalityProfile(
       chart: chart,
@@ -72,6 +105,9 @@ class PersonalityService {
           sun.zodiacPosition.sign,
           chart.planets[CelestialBody.saturn]!.zodiacPosition.sign),
       elementBalance: elementBalance,
+      modalityBalance: modalBal,
+      stelliums: stelliums.isEmpty ? null : stelliums,
+      moonPhaseAtBirth: moonPhaseAtBirth,
     );
   }
 
@@ -87,6 +123,17 @@ class PersonalityService {
       case CelestialBody.uranus: return 'innovation and change';
       case CelestialBody.neptune: return 'imagination and spirituality';
       case CelestialBody.pluto: return 'transformation and power';
+      case CelestialBody.northNode: return 'karmic path and destiny';
+      case CelestialBody.southNode: return 'karmic release and past patterns';
+    }
+  }
+
+  static String _modalityQuality(String modality) {
+    switch (modality) {
+      case 'Cardinal': return 'a natural initiator and leader';
+      case 'Fixed': return 'persistent, determined, and deeply committed';
+      case 'Mutable': return 'adaptable, versatile, and open to change';
+      default: return 'balanced in approach';
     }
   }
 

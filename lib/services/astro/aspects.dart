@@ -4,6 +4,36 @@ import '../../models/planet_position.dart';
 class AspectCalculator {
   AspectCalculator._();
 
+  /// Planet-specific orb multipliers.
+  /// Luminaries get wider orbs, outer planets get tighter orbs.
+  static double _orbFactor(CelestialBody body) {
+    switch (body) {
+      case CelestialBody.sun:
+      case CelestialBody.moon:
+        return 1.25;
+      case CelestialBody.mercury:
+      case CelestialBody.venus:
+      case CelestialBody.mars:
+        return 1.0;
+      case CelestialBody.jupiter:
+      case CelestialBody.saturn:
+        return 0.85;
+      case CelestialBody.uranus:
+      case CelestialBody.neptune:
+      case CelestialBody.pluto:
+        return 0.7;
+      case CelestialBody.northNode:
+      case CelestialBody.southNode:
+        return 0.6;
+    }
+  }
+
+  /// Effective orb for a pair of planets and aspect type.
+  static double effectiveOrb(
+      CelestialBody p1, CelestialBody p2, AspectType type) {
+    return type.maxOrb * (_orbFactor(p1) + _orbFactor(p2)) / 2.0;
+  }
+
   static List<Aspect> calculateAspects(
       Map<CelestialBody, PlanetPosition> planets) {
     final aspects = <Aspect>[];
@@ -20,7 +50,7 @@ class AspectCalculator {
 
         for (final type in AspectType.values) {
           final orb = (separation - type.angle).abs();
-          if (orb <= type.maxOrb) {
+          if (orb <= effectiveOrb(bodies[i], bodies[j], type)) {
             aspects.add(Aspect(
               planet1: bodies[i],
               planet2: bodies[j],

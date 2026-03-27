@@ -9,6 +9,9 @@ class Horoscope {
   final String luckyColor;
   final String mood;
   final double compatibility;
+  final String? transitContext;
+  final String? moonPhaseToday;
+  final List<String>? keyTransits;
 
   const Horoscope({
     required this.sign,
@@ -21,5 +24,8 @@ class Horoscope {
     required this.luckyColor,
     required this.mood,
     required this.compatibility,
+    this.transitContext,
+    this.moonPhaseToday,
+    this.keyTransits,
   });
 }
