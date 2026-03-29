@@ -25,6 +25,10 @@ class AspectCalculator {
       case CelestialBody.northNode:
       case CelestialBody.southNode:
         return 0.6;
+      case CelestialBody.chiron:
+        return 0.7;
+      case CelestialBody.lilith:
+        return 0.5;
     }
   }
 
@@ -35,7 +39,8 @@ class AspectCalculator {
   }
 
   static List<Aspect> calculateAspects(
-      Map<CelestialBody, PlanetPosition> planets) {
+      Map<CelestialBody, PlanetPosition> planets,
+      {Map<CelestialBody, double>? dailyMotions}) {
     final aspects = <Aspect>[];
     final bodies = planets.keys.toList();
 
@@ -51,12 +56,27 @@ class AspectCalculator {
         for (final type in AspectType.values) {
           final orb = (separation - type.angle).abs();
           if (orb <= effectiveOrb(bodies[i], bodies[j], type)) {
+            // Determine applying vs separating
+            bool? isApplying;
+            if (dailyMotions != null) {
+              final speed1 = dailyMotions[bodies[i]];
+              final speed2 = dailyMotions[bodies[j]];
+              if (speed1 != null && speed2 != null) {
+                final futureLon1 = p1.eclipticLongitude + speed1;
+                final futureLon2 = p2.eclipticLongitude + speed2;
+                final futureSep = _angularSeparation(futureLon1, futureLon2);
+                final futureOrb = (futureSep - type.angle).abs();
+                isApplying = futureOrb < orb;
+              }
+            }
+
             aspects.add(Aspect(
               planet1: bodies[i],
               planet2: bodies[j],
               type: type,
               exactAngle: separation,
               orb: orb,
+              isApplying: isApplying,
             ));
             break;
           }

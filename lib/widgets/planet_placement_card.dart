@@ -91,13 +91,82 @@ class PlanetPlacementCard extends StatelessWidget {
                         ),
                       ),
                     ],
+                    if (position.combustionStatus != null) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: position.combustionStatus == 'Cazimi'
+                              ? const Color(0xFFFFD54F).withAlpha(30)
+                              : const Color(0xFFFF7043).withAlpha(30),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          position.combustionStatus!,
+                          style: TextStyle(
+                            color: position.combustionStatus == 'Cazimi'
+                                ? const Color(0xFFFFD54F)
+                                : const Color(0xFFFF7043),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (position.speedStatus != null) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF42A5F5).withAlpha(30),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          position.speedStatus!,
+                          style: const TextStyle(
+                            color: Color(0xFF42A5F5),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  position.zodiacPosition.formatted,
-                  style: const TextStyle(
-                      color: AppTheme.textSecondary, fontSize: 12),
+                Row(
+                  children: [
+                    Text(
+                      position.zodiacPosition.formatted,
+                      style: const TextStyle(
+                          color: AppTheme.textSecondary, fontSize: 12),
+                    ),
+                    if (position.decan != null) ...[
+                      const SizedBox(width: 6),
+                      Text(
+                        position.decan!,
+                        style: const TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 10),
+                      ),
+                    ],
+                    if (position.dignityScore != null) ...[
+                      const SizedBox(width: 6),
+                      Text(
+                        '(${position.dignityScore! > 0 ? "+" : ""}${position.dignityScore})',
+                        style: TextStyle(
+                          color: position.dignityScore! > 0
+                              ? const Color(0xFF66BB6A)
+                              : position.dignityScore! < 0
+                                  ? const Color(0xFFEF5350)
+                                  : AppTheme.textSecondary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),

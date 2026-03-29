@@ -39,6 +39,7 @@ class Aspect {
   final AspectType type;
   final double exactAngle;
   final double orb;
+  final bool? isApplying;
 
   const Aspect({
     required this.planet1,
@@ -46,8 +47,11 @@ class Aspect {
     required this.type,
     required this.exactAngle,
     required this.orb,
+    this.isApplying,
   });
 
-  String get formatted =>
-      '${planet1.displayName} ${type.displayName} ${planet2.displayName} (orb: ${orb.toStringAsFixed(1)}\u00B0)';
+  String get formatted {
+    final phase = isApplying == null ? '' : isApplying! ? ' (applying)' : ' (separating)';
+    return '${planet1.displayName} ${type.displayName} ${planet2.displayName} (orb: ${orb.toStringAsFixed(1)}\u00B0)$phase';
+  }
 }

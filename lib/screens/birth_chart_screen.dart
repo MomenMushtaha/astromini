@@ -307,6 +307,114 @@ class _BirthChartScreenState extends State<BirthChartScreen> {
             ],
           ),
 
+          // Chart Overview (A+ features)
+          if (chart.analysis != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppTheme.cardDark,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppTheme.accentPurple.withAlpha(40)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Chart Overview',
+                      style: TextStyle(
+                        color: AppTheme.accentPurple,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      )),
+                  const SizedBox(height: 8),
+                  _overviewRow('Chart Ruler',
+                      chart.analysis!.chartRuler.displayName),
+                  _overviewRow('Sect',
+                      chart.analysis!.sect.name == 'day' ? 'Day Chart' : 'Night Chart'),
+                  _overviewRow('Chart Shape',
+                      chart.analysis!.chartShape.type.displayName),
+                  if (chart.analysis!.partOfFortune != null)
+                    _overviewRow('Part of Fortune',
+                        chart.analysis!.partOfFortune!.zodiacPosition.formatted),
+                  if (chart.analysis!.vertex != null)
+                    _overviewRow('Vertex',
+                        chart.analysis!.vertex!.zodiacPosition.formatted),
+                  if (chart.analysis!.isVoidOfCourseMoon)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 4),
+                      child: Text('Moon is Void of Course',
+                          style: TextStyle(
+                            color: Color(0xFFFF7043),
+                            fontSize: 11,
+                            fontStyle: FontStyle.italic,
+                          )),
+                    ),
+                ],
+              ),
+            ),
+          ],
+
+          // Aspect patterns
+          if (chart.analysis != null &&
+              chart.analysis!.aspectPatterns.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ...chart.analysis!.aspectPatterns.map((pattern) => Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentPurple.withAlpha(15),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: AppTheme.accentPurple.withAlpha(40)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${pattern.type.displayName}${pattern.element != null ? ' in ${pattern.element}' : ''}',
+                        style: const TextStyle(
+                          color: AppTheme.accentPurple,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        pattern.planets.map((p) => p.displayName).join(', '),
+                        style: const TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 11),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
+
+          // Fixed star conjunctions
+          if (chart.analysis != null &&
+              chart.analysis!.fixedStarConjunctions.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ...chart.analysis!.fixedStarConjunctions.map((star) => Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentGold.withAlpha(15),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: AppTheme.accentGold.withAlpha(40)),
+                  ),
+                  child: Text(
+                    '${star.starName} conjunct ${star.planet.displayName} (${star.orb.toStringAsFixed(1)}°)',
+                    style: const TextStyle(
+                        color: AppTheme.accentGold, fontSize: 12),
+                  ),
+                )),
+          ],
+
           // Stelliums
           if (chart.stelliums.isNotEmpty) ...[
             const SizedBox(height: 12),
@@ -404,6 +512,27 @@ class _BirthChartScreenState extends State<BirthChartScreen> {
                   ],
                 ),
               )),
+        ],
+      ),
+    );
+  }
+
+  Widget _overviewRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(label,
+                style: const TextStyle(
+                    color: AppTheme.textSecondary, fontSize: 11)),
+          ),
+          Text(value,
+              style: const TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500)),
         ],
       ),
     );

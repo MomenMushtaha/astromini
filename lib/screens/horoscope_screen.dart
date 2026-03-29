@@ -134,6 +134,53 @@ class _HoroscopeScreenState extends State<HoroscopeScreen> {
                     ),
                   ),
                 ],
+                // Void of Course Moon warning
+                if (horoscope.voidOfCourseMoonWarning != null) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF7043).withAlpha(15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color(0xFFFF7043).withAlpha(60)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('\u26A0\uFE0F',
+                            style: TextStyle(fontSize: 18)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Void of Course Moon',
+                                style: TextStyle(
+                                  color: Color(0xFFFF7043),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                horoscope.voidOfCourseMoonWarning!,
+                                style: const TextStyle(
+                                  color: AppTheme.textSecondary,
+                                  fontSize: 12,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 20),
                 _buildReadingCard(
                   '\u{1F31E} Daily Reading',

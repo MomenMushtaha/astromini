@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'chiron.dart';
+import 'lilith.dart';
 
 class PlanetaryPositions {
   PlanetaryPositions._();
@@ -128,8 +130,9 @@ class PlanetaryPositions {
   }
 
   static Map<String, double> allPositions(double t) {
+    final sunLon = sunLongitude(t);
     return {
-      'sun': sunLongitude(t),
+      'sun': sunLon,
       'moon': moonLongitude(t),
       'mercury': mercuryLongitude(t),
       'venus': venusLongitude(t),
@@ -141,6 +144,22 @@ class PlanetaryPositions {
       'pluto': plutoLongitude(t),
       'northNode': northNodeLongitude(t),
       'southNode': southNodeLongitude(t),
+      'chiron': ChironCalculator.chironLongitude(t, sunLon),
+      'lilith': LilithCalculator.lilithLongitude(t),
     };
+  }
+
+  /// Calculate daily motion (degrees/day) for all bodies.
+  static Map<String, double> allSpeeds(double t) {
+    final pos1 = allPositions(t);
+    final pos2 = allPositions(t + 1.0 / 36525.0); // 1 day later
+    final speeds = <String, double>{};
+    for (final key in pos1.keys) {
+      var diff = pos2[key]! - pos1[key]!;
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+      speeds[key] = diff;
+    }
+    return speeds;
   }
 }

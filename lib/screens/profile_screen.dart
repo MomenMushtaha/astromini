@@ -205,6 +205,62 @@ class ProfileScreen extends StatelessWidget {
                     )),
                 const SizedBox(height: 20),
 
+                // Chart Ruler analysis
+                if (profile.chartRulerAnalysis != null) ...[
+                  _sectionCard(
+                    context,
+                    icon: '\u{1F451}',
+                    title: 'Chart Ruler',
+                    content: profile.chartRulerAnalysis!,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Sect analysis
+                if (profile.sectAnalysis != null) ...[
+                  _sectionCard(
+                    context,
+                    icon: '\u{2600}\u{FE0F}',
+                    title: 'Day/Night Sect',
+                    content: profile.sectAnalysis!,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Aspect pattern analysis
+                if (profile.aspectPatternAnalysis != null) ...[
+                  _sectionCard(
+                    context,
+                    icon: '\u{1F4A0}',
+                    title: 'Aspect Patterns',
+                    content: profile.aspectPatternAnalysis!,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Chart shape analysis
+                if (profile.chartShapeAnalysis != null) ...[
+                  _sectionCard(
+                    context,
+                    icon: '\u{1F300}',
+                    title: 'Chart Shape',
+                    content: profile.chartShapeAnalysis!,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Fixed star notes
+                if (profile.fixedStarNotes != null &&
+                    profile.fixedStarNotes!.isNotEmpty) ...[
+                  _sectionCard(
+                    context,
+                    icon: '\u{2B50}',
+                    title: 'Fixed Star Influences',
+                    content: profile.fixedStarNotes!.join('\n\n'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
                 // Love style
                 _sectionCard(
                   context,

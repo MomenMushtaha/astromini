@@ -1,4 +1,5 @@
 import '../models/birth_chart.dart';
+import '../models/chart_analysis_result.dart';
 import '../models/personality_profile.dart';
 import '../models/planet_position.dart';
 import 'astro/dignities.dart';
@@ -77,6 +78,66 @@ class PersonalityService {
         ? '\n\n${stelliums.join('. ')} — concentrating energy in these areas of life.'
         : '';
 
+    // Chart analysis results
+    final analysis = chart.analysis;
+    String? chartRulerAnalysis;
+    String? aspectPatternAnalysis;
+    String? chartShapeAnalysis;
+    List<String>? fixedStarNotes;
+    String? sectAnalysis;
+
+    if (analysis != null) {
+      // Chart ruler
+      final ruler = analysis.chartRuler;
+      final rulerPos = chart.planets[ruler];
+      if (rulerPos != null) {
+        chartRulerAnalysis = 'Your chart ruler is ${ruler.displayName} '
+            '(ruling your $risingSign Ascendant), placed in '
+            '${rulerPos.zodiacPosition.sign} in house ${rulerPos.house}. '
+            'This planet\'s condition colors your entire life expression and '
+            'directs how you engage with the world.';
+      }
+
+      // Sect
+      final sectName = analysis.sect == Sect.day ? 'Day' : 'Night';
+      final benefic = analysis.sect == Sect.day ? 'Jupiter' : 'Venus';
+      final malefic = analysis.sect == Sect.day ? 'Saturn' : 'Mars';
+      sectAnalysis = 'You were born with a $sectName chart. '
+          '$benefic is your most supportive planet (sect benefic), while '
+          '$malefic operates more constructively in this sect. '
+          '${analysis.sect == Sect.day ? 'Solar themes of visibility, purpose, and conscious action are emphasized.' : 'Lunar themes of intuition, inner life, and emotional processing are emphasized.'}';
+
+      // Aspect patterns
+      if (analysis.aspectPatterns.isNotEmpty) {
+        final descriptions = analysis.aspectPatterns
+            .map((p) => '${p.type.displayName}: ${p.description}')
+            .toList();
+        aspectPatternAnalysis = descriptions.join('\n\n');
+      }
+
+      // Chart shape
+      final shape = analysis.chartShape;
+      chartShapeAnalysis = '${shape.type.displayName} chart pattern: ${shape.description}';
+
+      // Fixed star conjunctions
+      if (analysis.fixedStarConjunctions.isNotEmpty) {
+        fixedStarNotes = analysis.fixedStarConjunctions
+            .map((s) => '${s.starName} conjunct ${s.planet.displayName} '
+                '(orb ${s.orb.toStringAsFixed(1)}°): ${s.interpretation}')
+            .toList();
+      }
+
+      // Mutual receptions — add to summary
+      if (analysis.mutualReceptions.isNotEmpty) {
+        final mrNotes = analysis.mutualReceptions
+            .map((mr) => '${mr.planet1.displayName} in ${mr.sign1} and '
+                '${mr.planet2.displayName} in ${mr.sign2} are in mutual reception, '
+                'strengthening both planets')
+            .join('. ');
+        chartRulerAnalysis = '${chartRulerAnalysis ?? ''}\n\n$mrNotes.';
+      }
+    }
+
     final summary = 'With your Sun in ${sun.zodiacPosition.sign} '
         '(${sun.zodiacPosition.formatted}), Moon in ${moon.zodiacPosition.sign} '
         '(${moon.zodiacPosition.formatted}), and $risingSign Rising, you possess '
@@ -108,6 +169,11 @@ class PersonalityService {
       modalityBalance: modalBal,
       stelliums: stelliums.isEmpty ? null : stelliums,
       moonPhaseAtBirth: moonPhaseAtBirth,
+      chartRulerAnalysis: chartRulerAnalysis,
+      aspectPatternAnalysis: aspectPatternAnalysis,
+      chartShapeAnalysis: chartShapeAnalysis,
+      fixedStarNotes: fixedStarNotes,
+      sectAnalysis: sectAnalysis,
     );
   }
 
@@ -125,6 +191,8 @@ class PersonalityService {
       case CelestialBody.pluto: return 'transformation and power';
       case CelestialBody.northNode: return 'karmic path and destiny';
       case CelestialBody.southNode: return 'karmic release and past patterns';
+      case CelestialBody.chiron: return 'deepest wound and healing gift';
+      case CelestialBody.lilith: return 'primal instincts and shadow self';
     }
   }
 

@@ -120,6 +120,13 @@ class HouseSystem {
     return 1;
   }
 
+  /// Vertex: the Ascendant at co-latitude (90° - latitude).
+  /// The Vertex is a fated encounter point, always in houses 5-8.
+  static double vertex(double lstDeg, double latDeg, double oblDeg) {
+    final coLatitude = 90.0 - latDeg;
+    return ascendant(lstDeg, coLatitude, oblDeg);
+  }
+
   static double _normalize(double deg) {
     var d = deg % 360.0;
     if (d < 0) d += 360.0;

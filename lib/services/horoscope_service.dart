@@ -6,6 +6,7 @@ import '../models/planet_position.dart';
 import 'astro/astro_engine.dart';
 import 'astro/moon_phase.dart';
 import 'astro/transit_calculator.dart';
+import 'astro/void_of_course.dart';
 
 class HoroscopeService {
   // Fallback templates when no notable transits found
@@ -95,6 +96,23 @@ class HoroscopeService {
         ? 'Key transit: ${transits.first.title}. ${transits.first.significance}'
         : null;
 
+    // Void of Course Moon check
+    String? vocWarning;
+    final moonSpeed = moonPos.dailyMotion ?? 13.0;
+    final planetLons = <String, double>{};
+    for (final entry in currentPositions.entries) {
+      if (entry.key != CelestialBody.moon) {
+        planetLons[entry.key.name] = entry.value.eclipticLongitude;
+      }
+    }
+    if (VoidOfCourseMoon.isVoidOfCourse(
+        moonPos.eclipticLongitude, moonSpeed, planetLons)) {
+      vocWarning = 'The Moon is currently Void of Course — '
+          'not the best time to start new ventures, sign contracts, or '
+          'make major decisions. Use this period for rest, reflection, '
+          'and completing existing tasks.';
+    }
+
     return Horoscope(
       sign: signName,
       date: DateFormat('MMMM d, yyyy').format(now),
@@ -109,6 +127,7 @@ class HoroscopeService {
       transitContext: transitContext,
       moonPhaseToday: '${MoonPhaseCalculator.phaseEmoji(moonPhase)} $moonPhase',
       keyTransits: keyTransitStrings.isEmpty ? null : keyTransitStrings,
+      voidOfCourseMoonWarning: vocWarning,
     );
   }
 
@@ -130,6 +149,16 @@ class HoroscopeService {
     if (transits.isNotEmpty) {
       final top = transits.first;
       parts.add('${top.description} ${top.significance}');
+    }
+
+    // Outer planet transits (Uranus, Neptune, Pluto) — long-term themes
+    final outerTransits = transits.where((t) =>
+        t.planet == CelestialBody.uranus ||
+        t.planet == CelestialBody.neptune ||
+        t.planet == CelestialBody.pluto).toList();
+    if (outerTransits.isNotEmpty && outerTransits.first != transits.firstOrNull) {
+      final outer = outerTransits.first;
+      parts.add('Long-term theme: ${outer.description}');
     }
 
     if (parts.length < 2) {

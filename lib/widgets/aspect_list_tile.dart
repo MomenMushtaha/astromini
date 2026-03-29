@@ -46,6 +46,20 @@ class AspectListTile extends StatelessWidget {
             style: const TextStyle(fontSize: 16, color: AppTheme.textPrimary),
           ),
           const Spacer(),
+          if (aspect.isApplying != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Text(
+                aspect.isApplying! ? 'applying' : 'separating',
+                style: TextStyle(
+                  color: aspect.isApplying!
+                      ? const Color(0xFF66BB6A)
+                      : AppTheme.textSecondary,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
           Text(
             'orb ${aspect.orb.toStringAsFixed(1)}\u00B0',
             style:

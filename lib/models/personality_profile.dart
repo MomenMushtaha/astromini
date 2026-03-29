@@ -30,6 +30,11 @@ class PersonalityProfile {
   final Map<String, int>? modalityBalance;
   final List<String>? stelliums;
   final String? moonPhaseAtBirth;
+  final String? chartRulerAnalysis;
+  final String? aspectPatternAnalysis;
+  final String? chartShapeAnalysis;
+  final List<String>? fixedStarNotes;
+  final String? sectAnalysis;
 
   const PersonalityProfile({
     required this.chart,
@@ -46,5 +51,10 @@ class PersonalityProfile {
     this.modalityBalance,
     this.stelliums,
     this.moonPhaseAtBirth,
+    this.chartRulerAnalysis,
+    this.aspectPatternAnalysis,
+    this.chartShapeAnalysis,
+    this.fixedStarNotes,
+    this.sectAnalysis,
   });
 }

@@ -10,7 +10,9 @@ enum CelestialBody {
   neptune,
   pluto,
   northNode,
-  southNode;
+  southNode,
+  chiron,
+  lilith;
 
   String get symbol {
     switch (this) {
@@ -26,6 +28,8 @@ enum CelestialBody {
       case pluto: return '\u2647';
       case northNode: return '\u260A';
       case southNode: return '\u260B';
+      case chiron: return '\u26B7';
+      case lilith: return '\u26B8';
     }
   }
 
@@ -33,6 +37,7 @@ enum CelestialBody {
     switch (this) {
       case northNode: return 'North Node';
       case southNode: return 'South Node';
+      case lilith: return 'Black Moon Lilith';
       default: return name[0].toUpperCase() + name.substring(1);
     }
   }
@@ -58,6 +63,12 @@ class PlanetPosition {
   final ZodiacPosition zodiacPosition;
   final int house;
   final bool isRetrograde;
+  final double? dailyMotion;
+  final double? declination;
+  final String? decan;
+  final int? dignityScore;
+  final String? combustionStatus;
+  final String? speedStatus;
 
   const PlanetPosition({
     required this.body,
@@ -65,5 +76,11 @@ class PlanetPosition {
     required this.zodiacPosition,
     required this.house,
     this.isRetrograde = false,
+    this.dailyMotion,
+    this.declination,
+    this.decan,
+    this.dignityScore,
+    this.combustionStatus,
+    this.speedStatus,
   });
 }

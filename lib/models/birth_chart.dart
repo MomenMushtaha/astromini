@@ -1,6 +1,7 @@
 import 'birth_data.dart';
 import 'planet_position.dart';
 import 'aspect.dart';
+import 'chart_analysis_result.dart';
 
 class BirthChart {
   final BirthData birthData;
@@ -10,6 +11,7 @@ class BirthChart {
   final double midheaven;
   final List<Aspect> aspects;
   final String? moonPhase;
+  final ChartAnalysisResult? analysis;
 
   const BirthChart({
     required this.birthData,
@@ -19,6 +21,7 @@ class BirthChart {
     required this.midheaven,
     required this.aspects,
     this.moonPhase,
+    this.analysis,
   });
 
   ZodiacPosition get sunSign => planets[CelestialBody.sun]!.zodiacPosition;

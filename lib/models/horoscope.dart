@@ -12,6 +12,7 @@ class Horoscope {
   final String? transitContext;
   final String? moonPhaseToday;
   final List<String>? keyTransits;
+  final String? voidOfCourseMoonWarning;
 
   const Horoscope({
     required this.sign,
@@ -27,5 +28,6 @@ class Horoscope {
     this.transitContext,
     this.moonPhaseToday,
     this.keyTransits,
+    this.voidOfCourseMoonWarning,
   });
 }

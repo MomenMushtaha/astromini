@@ -26,6 +26,9 @@ class TransitCalculator {
     CelestialBody.mars,
     CelestialBody.jupiter,
     CelestialBody.saturn,
+    CelestialBody.uranus,
+    CelestialBody.neptune,
+    CelestialBody.pluto,
   ];
 
   /// Natal points to check against.
